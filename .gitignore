@@ -1,0 +1,12 @@
+.DS_Store
+/tmp
+/temp
+
+# tmp file
+
+# dev file
+run_apiTools
+
+# Editor directories and files
+.idea
+.vscode
