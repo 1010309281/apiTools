@@ -11,7 +11,8 @@ import (
 func NoRouter(c *gin.Context) {
 	// 处理短链接跳转
 	if len(c.Request.URL.Query()) > 0 {
-		c.String(http.StatusNotFound, "404 page not found")
+		//c.String(http.StatusNotFound, "404 page not found")
+		c.Redirect(http.StatusFound, "/")
 		return
 	}
 	host, path := c.Request.Host, c.Request.URL.Path
