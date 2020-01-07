@@ -6,6 +6,7 @@
 
 # dev file
 run_apiTools
+apiTools
 
 # Editor directories and files
 .idea

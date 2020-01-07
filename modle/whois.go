@@ -1,4 +1,4 @@
-package modles
+package modle
 
 import (
 	"apiTools/utils"
@@ -23,7 +23,7 @@ var (
 // whois信息接收的表单数据结构
 type WhoisForm struct {
 	Domain  string `form:"domain" json:"domain" xml:"domain" binding:"required"` // 域名
-	OutType string `form:"type" json:"type" xml:"type"`       // 返回数据类型, json, text
+	OutType string `form:"type" json:"type" xml:"type"`                          // 返回数据类型, json, text
 }
 
 // whois查询后返回信息数据结构
@@ -120,7 +120,11 @@ DoneLabel:
 	for {
 		select {
 		case whoisInfo.TextInfo = <-dataChan:
-			whoisInfo.Status = 0
+			if len(whoisInfo.TextInfo) < 3 {
+				whoisInfo.Status = 4
+			} else {
+				whoisInfo.Status = 0
+			}
 			cancel()
 			break DoneLabel
 		case <-ctx.Done():
@@ -166,6 +170,7 @@ func connWhoisServer(domain string, server string, dataChan chan string, ctx con
 		buf := make([]byte, 1024)
 		n, err := conn.Read(buf)
 		if err == io.EOF || err != nil {
+			content = append(content, buf[:n]...)
 			break
 		} else {
 			content = append(content, buf[:n]...)
@@ -185,7 +190,7 @@ func connWhoisServer(domain string, server string, dataChan chan string, ctx con
 // 匹配查询后的域名信息
 func (whoisInfo *WhoisInfo) matchWhois() (*WhoisInfo, error) {
 	if whoisInfo.Status != 0 {
-		return whoisInfo, fmt.Errorf("match domain [%s] fail", whoisInfo.Domain, )
+		return whoisInfo, fmt.Errorf("match domain [%s] fail", whoisInfo.Domain)
 	}
 	// 处理文本格式whois信息换行符
 	textInfoSlice := strings.Split(whoisInfo.TextInfo, "\n")
@@ -273,9 +278,9 @@ func matchText(pattern string, text string, ty string) (data interface{}) {
 		if ty == "str" {
 			data = strings.TrimSpace(submatch[0][1])
 		} else {
-			rslice := make([]string, len(submatch))
-			for index, match := range submatch {
-				rslice[index] = strings.TrimSpace(match[1])
+			rslice := make([]string, 0, len(submatch))
+			for _, match := range submatch {
+				rslice = append(rslice, strings.TrimSpace(match[1]))
 			}
 			data = rslice
 		}

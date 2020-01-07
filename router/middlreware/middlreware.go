@@ -2,7 +2,7 @@ package middlreware
 
 import (
 	"apiTools/libs/logger"
-	modles "apiTools/modle"
+	"apiTools/modle"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -69,12 +69,57 @@ func Logger() gin.HandlerFunc {
 	}
 }
 
-func ApiCount(apiName string) gin.HandlerFunc {
+func ProApiDocs() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		countKeyName := fmt.Sprintf("apiCount_%s", apiName)
-		redisClient := modles.RedisPool.Get()
-		defer redisClient.Close()
-		_, _ = redisClient.Do("INCR", countKeyName)
+		urlpath := c.Request.URL.Path
+		urlPathSlice := strings.Split(urlpath, "/")
+		// url不匹配
+		if len(urlPathSlice) < 3 {
+			c.Next()
+			return
+		} else if len(urlPathSlice) == 3 && strings.HasSuffix(urlpath, "/") {
+			c.Next()
+			return
+		}
+		// 获取字段
+		rk := urlPathSlice[1]
+		urlPath := urlPathSlice[2]
+		// 获取json data
+		jsonData, ok := modle.JsonData.(map[string]interface{})
+		if !ok {
+			c.Next()
+			return
+		}
+		// 获取json data中api data
+		apiData, ok := jsonData[urlPath].(map[string]interface{})
+		if !ok {
+			c.Next()
+			return
+		}
+		c.Set("urlPath", urlPath)
+		countKey, countKeyOk := apiData["countKey"]
+		docFile, docFileOk := apiData["docFile"]
+		// 根据路由处理
+		if rk == "api" {
+			if countKeyOk {
+				c.Set("countKey", countKey)
+				c.Set("docFile", docFile)
+				// redis自增
+				countKeyName := fmt.Sprintf("apiCount_%s", countKey)
+				redisClient := modle.RedisPool.Get()
+				defer redisClient.Close()
+				_, _ = redisClient.Do("INCR", countKeyName)
+			}
+		} else if rk == "docs" {
+			if docFileOk {
+				c.Set("countKey", countKey)
+				c.Set("docFile", docFile)
+			}
+			titleName, ok := apiData["titleName"]
+			if ok {
+				c.Set("titleName", titleName)
+			}
+		}
 		c.Next()
 	}
 }

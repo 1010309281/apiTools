@@ -22,7 +22,7 @@ func main() {
 	}
 
 	// 初始化redis连接池
-	err = modles.InitRedis()
+	err = modle.InitRedis()
 	if err != nil {
 		panic(err)
 	}

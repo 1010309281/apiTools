@@ -1,4 +1,4 @@
-package modles
+package modle
 
 import (
 	"apiTools/utils"

@@ -1,5 +1,5 @@
 ### 这是什么
-apiTools是一个集一些实用Api于一身的web项目
+ApiTools是一个集成各种开放Api的web项目，为大家提供免费的、常用的Api功能
 
 ### 开发
 
@@ -12,17 +12,38 @@ nosql数据库: redis 5.x
 
 ### 部署
 
+> 需要具备go语言环境
+
+1.编译代码
+```text
+$ git clone https://github.com/spdir/apiTools.git
+$ go env -w GOPROXY=https://goproxy.io,direct
+$ cd apiTools
+$ GOOS=linux GOARCH=amd64 go build -o apiTools main.go
+```
+2.发布
+
+> 将编译好的二进制文件和配置文件和基本数据打包
+
+```text
+config/             // 配置文件目录需要打包 
+data/               // 数据目录需要打包  
+views/              // html文件
+static/             // 静态文件   
+apiTools            // 可执行程序文件
+```
 
 ### 目前支持的Api接口
 
+> 如果您有接口需要可以随时联系作者(qq: 1152490990)进行开发
+
 1. 短链接
--[ ] 短链接生成
--[ ] 短链接解析
--[ ] 短链接地址访问
+- [x] 自定义短链接生成
+- [x] 自定义短链接解析
 
 2. 域名whois信息查询
-- [ ] 域名查询
-
+- [x] 域名whois查询
 
 ---
-文档地址: []()
+官网地址: [https://api.devopsclub.cn](https://api.devopsclub.cn)
+

@@ -1,0 +1,20 @@
+{
+  "whoisquery": {
+    "docFile": "whoisquery.md",
+    "countKey": "whoisquery",
+    "description": "查询域名whois信息",
+    "titleName": "域名Whois查询"
+  },
+  "toshorturl": {
+    "docFile": "toshorturl.md",
+    "countKey": "toshorturl",
+    "description": "长链接转换为自定义短链接",
+    "titleName": "自定义生成短链接"
+  },
+  "parseshorturl": {
+    "docFile": "parseshorturl.md",
+    "countKey": "parseshorturl",
+    "description": "自定义短链链接解析为长链接",
+    "titleName": "自定义短链接还原"
+  }
+}

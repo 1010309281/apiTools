@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"time"
 )
 
 // 项目配置信息
@@ -17,13 +18,14 @@ type appConfig struct {
 
 // 服务配置信息
 type serverConfig struct {
-	Port         string `conf:"port"`         // http监听端口
-	AppMode      string `conf:"appMode"`      // app运行模式: production, development
-	LogLevel     string `conf:"logLevel"`     // 日志级别: debug, info, error, warn, panic
-	LogSaveDay   uint   `conf:"logSaveDay"`   // 日志文件保留天数
-	LogSplitTime uint   `conf:"logSplitTime"` // 日志切割时间间隔
-	LogOutType   string `conf:"logOutType"`   // 日志输入类型, json, text
-	LogOutPath   string `conf:"logOutPath"`   // 文件输出位置, file console
+	Port         string    `conf:"port"`         // http监听端口
+	AppMode      string    `conf:"appMode"`      // app运行模式: production, development
+	LogLevel     string    `conf:"logLevel"`     // 日志级别: debug, info, error, warn, panic
+	LogSaveDay   uint      `conf:"logSaveDay"`   // 日志文件保留天数
+	LogSplitTime uint      `conf:"logSplitTime"` // 日志切割时间间隔
+	LogOutType   string    `conf:"logOutType"`   // 日志输入类型, json, text
+	LogOutPath   string    `conf:"logOutPath"`   // 文件输出位置, file console
+	StartTime    time.Time `conf:"startTime"`    // 系统开始运行时间
 }
 
 // redis 配置信息
@@ -167,6 +169,19 @@ func readServerConfig(iniFile *ini.File) (err error) {
 		logOutPath = "file"
 	}
 	appConf.serverConfig.LogOutPath = logOutPath
+
+	startTime := serverConf.Key("startTime").String()
+	if startTime == "" {
+		appConf.StartTime = time.Now()
+	} else {
+		runTime, err := time.Parse("2006/01/02", startTime)
+		if err != nil {
+			appConf.StartTime = time.Now()
+		} else {
+			appConf.StartTime = runTime
+		}
+	}
+
 	return
 }
 

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -49,7 +50,6 @@ func GetShortStr() (tiny string) {
 				runes = append(runes, alpha[num%62])
 			}
 			num = num / 62
-
 		}
 		for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
 			runes[i], runes[j] = runes[j], runes[i]
@@ -71,4 +71,13 @@ func merge(a, b []rune) []rune {
 	copy(c, a)
 	copy(c[len(a):], b)
 	return c
+}
+
+func StructToMap(i interface{}) interface{} {
+	var mapData interface{}
+	// 转json
+	bytes, _ := json.Marshal(i)
+	// json转map
+	_ = json.Unmarshal(bytes, &mapData)
+	return mapData
 }

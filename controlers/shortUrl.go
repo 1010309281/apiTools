@@ -2,7 +2,7 @@ package controlers
 
 import (
 	"apiTools/libs/logger"
-	modles "apiTools/modle"
+	"apiTools/modle"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -11,7 +11,7 @@ import (
 
 // 长链接转换为短链接 --> api
 func ShortToShortUrl(c *gin.Context) {
-	shortForm := &modles.ShortForm{}
+	shortForm := &modle.ShortForm{}
 	data := gin.H{
 		"code":     1,  // 转换成功状态码(0 成功, 非零 失败)
 		"domain":   "", // 短地址配置的域名
@@ -39,7 +39,7 @@ func ShortToShortUrl(c *gin.Context) {
 		shortForm.ExpireTime = -1
 	}
 
-	shortInfo, err := modles.ToShortUrl(shortForm)
+	shortInfo, err := modle.ToShortUrl(shortForm)
 	if err != nil {
 		data["msg"] = "Short link generation failed, please try again later!!!"
 		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
@@ -88,7 +88,7 @@ func ShortParseShortUrl(c *gin.Context) {
 		return
 	}
 	// 解析短链接
-	shortInfo, err := modles.ParseShort(shortUrlQuery)
+	shortInfo, err := modle.ParseShort(shortUrlQuery)
 	// 解析失败
 	if err != nil {
 		data["msg"] = "parse short url fail"

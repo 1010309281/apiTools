@@ -30,6 +30,7 @@ func InitRouter() {
 	Router.Use(gin.Recovery())
 	Router.Use(middlreware.AllowCors())
 	Router.Use(middlreware.Logger())
+	Router.Use(middlreware.ProApiDocs())
 
 	// 404错误处理
 	Router.NoRoute(controlers.NoRouter)

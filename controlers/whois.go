@@ -2,7 +2,7 @@ package controlers
 
 import (
 	"apiTools/libs/logger"
-	modles "apiTools/modle"
+	"apiTools/modle"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 // 域名whois信息查询 --> api
 func WhoisQuery(c *gin.Context) {
-	var whoisForm modles.WhoisForm
+	var whoisForm modle.WhoisForm
 	err := c.Bind(&whoisForm)
 	data := gin.H{
 		"data":   "", // whois数据
@@ -26,10 +26,10 @@ func WhoisQuery(c *gin.Context) {
 		}).Error("get query whois form param fail")
 		return
 	}
-	whoisInfo := &modles.WhoisInfo{}
+	whoisInfo := &modle.WhoisInfo{}
 	if whoisForm.OutType == "text" {
 		whoisInfo.WhoisForm.OutType = "text"
-		whoisInfo, err = modles.QueryWhoisInfo(&whoisForm)
+		whoisInfo, err = modle.QueryWhoisInfo(&whoisForm)
 		data["status"] = whoisInfo.Status
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data})
@@ -44,7 +44,7 @@ func WhoisQuery(c *gin.Context) {
 		data["data"] = whoisInfo.TextInfo
 	} else {
 		whoisInfo.WhoisForm.OutType = "json"
-		whoisInfo, err = modles.QueryWhoisInfoToJson(&whoisForm)
+		whoisInfo, err = modle.QueryWhoisInfoToJson(&whoisForm)
 		data["status"] = whoisInfo.Status
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data})

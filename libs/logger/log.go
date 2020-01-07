@@ -76,7 +76,6 @@ func InitLogger() (err error) {
 			rotatelogs.WithLinkName(logFileName),                // 生成软链，指向最新日志文件
 			rotatelogs.WithMaxAge(logSaveDay*24*time.Hour),      // 文件最大保存时间
 			rotatelogs.WithRotationTime(logSplitTime*time.Hour), // 日志切割时间间隔
-
 		)
 		// 为不同级别设置不同的输出目的
 		writeMap := lfshook.WriterMap{
