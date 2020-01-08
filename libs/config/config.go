@@ -88,23 +88,24 @@ func GetString(ck string) (val string) {
 	return
 }
 
-func GetInt(ck string) (val int) {
+func GetInt(ck string) (int) {
 	value := Get(ck)
 	if value == nil {
-		return
-	}
-	val, ok := value.(int)
-	if !ok {
 		return 0
 	}
-	return
+	if v01, ok01 := value.(uint); ok01 {
+		return int(v01)
+	}
+	if v02, ok02 := value.(int); ok02 {
+		return v02
+	}
+	return 0
 }
 
 // 初始化配置
 func InitConfig() (err error) {
 	// 获取配置文件
 	configPath := filepath.Join(utils.GetRootPath(), "config", "apitools.ini")
-	//configPath := filepath.Join("/Users/aery/Data/code/Go/go_work/src/apiTools/", "config", "apitools.ini")
 	iniFile, err := ini.Load(configPath)
 	if err != nil {
 		return
