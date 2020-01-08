@@ -54,7 +54,7 @@ body {
 }
 
 #index .apiList {
-    margin: 0 60px;
+    margin: 0 6%;
 }
 
 #index .apiList .explain {
@@ -68,6 +68,23 @@ body {
     padding: 16px 22px;
     text-align: center;
     width: 31%;
+}
+
+@media screen and (max-width: 500px) {
+    #index .apiList .layui-col-md4 {
+        margin: 10px 0;
+        padding: 16px 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    #about {
+        margin: 24% 6% !important;
+    }
+
+    #docs {
+        margin: 20% 6% !important;
+    }
 }
 
 #index .apiList .drow {
