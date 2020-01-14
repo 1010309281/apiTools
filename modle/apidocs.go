@@ -65,6 +65,10 @@ func GetAllApiInfo() (allApiInfo *AllApiInfo, err error) {
 		if !ok {
 			continue
 		}
+		// 判断api是否被禁用
+		if apiJson["enable"] == false {
+			continue
+		}
 		// 组装apiInfo数据
 		apiInfo.ApiUrl = key
 		apiInfo.Description = apiJson["description"].(string)

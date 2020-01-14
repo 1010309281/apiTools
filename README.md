@@ -44,6 +44,17 @@ apiTools            // 可执行程序文件
 2. 域名whois信息查询
 - [x] 域名whois查询
 
+3. IP地址信息查询
+- [x] ipv4地址信息查询
+- [ ] ipv6地址信息查询
+
+4. 代理地址池
+- [ ] 代理地址池
+
+5. 短视频去水印
+- [ ] 集成短视频去水印
+
+
 ---
 官网地址: [https://api.devopsclub.cn](https://api.devopsclub.cn)
 

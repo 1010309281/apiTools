@@ -92,9 +92,15 @@ func ProApiDocs() gin.HandlerFunc {
 		}
 		// 获取json data中api data
 		apiData, ok := jsonData[urlPath].(map[string]interface{})
+		// 没有匹配到，说明不是访问的api相关，直接进入路由函数
 		if !ok {
 			c.Next()
 			return
+		}
+		// 判断中间件是否被禁用, 禁止就终止，返回404
+		if apiData["enable"] == false {
+			c.String(http.StatusNotFound, "404 page not found")
+			c.Abort()
 		}
 		c.Set("urlPath", urlPath)
 		countKey, countKeyOk := apiData["countKey"]

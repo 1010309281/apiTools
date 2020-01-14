@@ -3,24 +3,28 @@
     "docFile": "whoisquery.md",
     "countKey": "whoisquery",
     "description": "查询域名whois信息",
-    "titleName": "域名Whois查询"
+    "titleName": "域名Whois查询",
+    "enable": false
   },
   "toshorturl": {
     "docFile": "toshorturl.md",
     "countKey": "toshorturl",
     "description": "长链接转换为自定义短链接",
-    "titleName": "自定义生成短链接"
+    "titleName": "自定义生成短链接",
+    "enable": true
   },
   "parseshorturl": {
     "docFile": "parseshorturl.md",
     "countKey": "parseshorturl",
     "description": "自定义短链链接解析为长链接",
-    "titleName": "自定义短链接还原"
+    "titleName": "自定义短链接还原",
+    "enable": true
   },
   "ipv4query": {
     "docFile": "ipv4query.md",
     "countKey": "ipv4query",
     "description": "获取指定ipv4地址信息",
-    "titleName": "ipv4信息查询"
+    "titleName": "ipv4信息查询",
+    "enable": true
   }
 }
