@@ -16,13 +16,11 @@ func ShortToShortUrl(c *gin.Context) {
 		"code":     1,  // 转换成功状态码(0 成功, 非零 失败)
 		"domain":   "", // 短地址配置的域名
 		"shortUrl": "", // 短链接地址
-		"msg":      "", // 消息
 	}
 	err := c.Bind(shortForm)
 	// 接收数据失败
 	if err != nil {
-		data["msg"] = "Incorrect request data"
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "Incorrect request data"})
 		logger.Echo.WithFields(logrus.Fields{
 			"router": c.Request.URL.Path,
 			"err":    err,
@@ -41,8 +39,7 @@ func ShortToShortUrl(c *gin.Context) {
 
 	shortInfo, err := modle.ToShortUrl(shortForm)
 	if err != nil {
-		data["msg"] = "Short link generation failed, please try again later!!!"
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "Short link generation failed, please try again later!!!"})
 		logger.Echo.WithFields(logrus.Fields{
 			"router": c.Request.URL.Path,
 			"err":    err,
@@ -64,7 +61,7 @@ func ShortToShortUrl(c *gin.Context) {
 		"data":   shortInfo,
 	}).Info("to short url success")
 
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data, "msg": ""})
 }
 
 // 短链接解析回长链接 --> api
@@ -74,12 +71,10 @@ func ShortParseShortUrl(c *gin.Context) {
 		"code":    1,  // 转换成功状态码(0 成功, 非零 失败)
 		"domain":  "", // 短地址配置的域名
 		"longUrl": "", // 原长链接地址
-		"msg":     "", // 消息
 	}
 	// 获取请求参数失败
 	if shortUrlQuery == "" {
-		data["msg"] = "shortUrl parameter cannot be empty"
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "shortUrl parameter cannot be empty",})
 		logger.Echo.WithFields(logrus.Fields{
 			"router": c.Request.URL.Path,
 			"err":    data["msg"],
@@ -91,8 +86,7 @@ func ShortParseShortUrl(c *gin.Context) {
 	shortInfo, err := modle.ParseShort(shortUrlQuery)
 	// 解析失败
 	if err != nil {
-		data["msg"] = "parse short url fail"
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "parse short url fail"})
 		logger.Echo.WithFields(logrus.Fields{
 			"router": c.Request.URL.Path,
 			"err":    err,
@@ -114,5 +108,5 @@ func ShortParseShortUrl(c *gin.Context) {
 		"data":   shortInfo,
 	}).Info("parse short url success")
 
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data, "msg": ""})
 }

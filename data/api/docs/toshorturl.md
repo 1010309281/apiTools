@@ -63,9 +63,9 @@ msg | String | 消息
     "data": {
         "code": 0,
         "domain": "api.devopsclub.cn",
-        "msg": "",
         "shortUrl": "http://api.devopsclub.cn/2ndtW1b2Tj"
-    }
+    },
+    "msg": ""
 }
 ```
 

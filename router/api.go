@@ -21,4 +21,9 @@ func initApiRouter() {
 		apiGroup.GET("/parseshorturl", controlers.ShortParseShortUrl)
 		apiGroup.POST("/parseshorturl", controlers.ShortParseShortUrl)
 	}
+	// ip query
+	{
+		apiGroup.GET("/ipv4query", controlers.Ipv4Query)
+		apiGroup.POST("/ipv4query", controlers.Ipv4Query)
+	}
 }

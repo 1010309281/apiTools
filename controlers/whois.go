@@ -14,15 +14,14 @@ func WhoisQuery(c *gin.Context) {
 	err := c.Bind(&whoisForm)
 	data := gin.H{
 		"data":   "", // whois数据
-		"msg":    "", // 域名查询状态
 		"status": 5,  // 域名查询状态
 	}
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data})
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "request param fail"})
 		logger.Echo.WithFields(logrus.Fields{
 			"router": c.Request.URL.Path,
 			"err":    err,
-			"query": whoisForm,
+			"query":  whoisForm,
 		}).Error("get query whois form param fail")
 		return
 	}
@@ -32,7 +31,7 @@ func WhoisQuery(c *gin.Context) {
 		whoisInfo, err = modle.QueryWhoisInfo(&whoisForm)
 		data["status"] = whoisInfo.Status
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data})
+			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data, "msg": "query fail"})
 			logger.Echo.WithFields(logrus.Fields{
 				"router": c.Request.URL.Path,
 				"err":    err,
@@ -47,7 +46,7 @@ func WhoisQuery(c *gin.Context) {
 		whoisInfo, err = modle.QueryWhoisInfoToJson(&whoisForm)
 		data["status"] = whoisInfo.Status
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data})
+			c.JSON(http.StatusBadRequest, gin.H{"code": 0, "data": data, "msg": "query fail"})
 			logger.Echo.WithFields(logrus.Fields{
 				"router": c.Request.URL.Path,
 				"err":    err,
@@ -73,5 +72,5 @@ func WhoisQuery(c *gin.Context) {
 		"data":   logrus.Fields{"domain": whoisInfo.Domain},
 	}).Info("query whois info success")
 
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": data, "msg": ""})
 }

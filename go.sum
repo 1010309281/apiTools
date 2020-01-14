@@ -37,6 +37,8 @@ github.com/lestrrat-go/file-rotatelogs v2.2.0+incompatible h1:eXEwY0f2h6mcobdAxm
 github.com/lestrrat-go/file-rotatelogs v2.2.0+incompatible/go.mod h1:ZQnN8lSECaebrkQytbHj4xNgtg8CR7RYXnPok8e0EHA=
 github.com/lestrrat-go/strftime v1.0.0 h1:wZIfTHGdu7TeGu318uLJwuQvTMt9UpRyS+XV2Rc4wo4=
 github.com/lestrrat-go/strftime v1.0.0/go.mod h1:E1nN3pCbtMSu1yjSVeyuRFVm/U0xoR76fd03sz+Qz4g=
+github.com/lionsoul2014/ip2region v2.1.0-release+incompatible h1:FHT0RIeHl5C1G+V0mhKI+kFoBoDOPBEmF8hVhKZcmNs=
+github.com/lionsoul2014/ip2region v2.1.0-release+incompatible/go.mod h1:+ZBN7PBoh5gG6/y0ZQ85vJDBe21WnfbRrQQwTfliJJI=
 github.com/mattn/go-isatty v0.0.9 h1:d5US/mDsogSGW37IV293h//ZFaeajb69h+EHFsv2xGg=
 github.com/mattn/go-isatty v0.0.9/go.mod h1:YNRxwqDuOph6SZLI9vUUz6OYw3QyUt7WiY2yME+cCiQ=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 h1:ZqeYNhU3OHLH3mGKHDcjJRFFRrJa6eAM5H+CtDdOsPc=

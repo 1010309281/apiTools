@@ -62,8 +62,8 @@ msg | String | 消息
         "code": 0,
         "domain": "api.devopsclub.cn",
         "longUrl": "https://www.cnblogs.com/zhichaoma",
-        "msg": ""
-    }
+    },
+    "msg": ""
 }
 ```
 

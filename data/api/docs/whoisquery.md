@@ -82,9 +82,9 @@ msg | String | 消息
             "registryExpiryDate": "2020-07-27T04:02:14Z",
             "updatedDate": "2019-09-01T11:28:18Z"
         },
-        "msg": "",
         "status": 0
-    }
+    },
+    "msg": ""
 }
 ```
 

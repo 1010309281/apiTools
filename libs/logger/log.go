@@ -19,7 +19,7 @@ func InitLogger() (err error) {
 	Echo = logrus.New()
 
 	// 记录文件名和行号
-	Echo.SetReportCaller(true)
+	//Echo.SetReportCaller(true)
 
 	// 设置日志输入格式
 	switch config.GetString("web::logOutType") {
