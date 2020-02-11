@@ -19,6 +19,12 @@ nosql数据库: redis 5.x
 $ git clone https://github.com/spdir/apiTools.git
 $ go env -w GOPROXY=https://goproxy.io,direct
 $ cd apiTools
+
+> make编译
+$ make clean       // 清理
+$ make build       // 编译二进制 
+
+> 手动编译(交叉编译)
 $ GOOS=linux GOARCH=amd64 go build -o apiTools main.go
 ```
 2.发布

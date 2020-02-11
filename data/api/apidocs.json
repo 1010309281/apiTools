@@ -4,7 +4,7 @@
     "countKey": "whoisquery",
     "description": "查询域名whois信息",
     "titleName": "域名Whois查询",
-    "enable": false
+    "enable": true
   },
   "toshorturl": {
     "docFile": "toshorturl.md",

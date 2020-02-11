@@ -8,6 +8,7 @@ import (
 func init() {
 	//config.InitConfig()
 	//modles.InitRedis()
+	//modles.InitJsonData()
 }
 
 func TestWhoisQuery(t *testing.T) {
@@ -48,11 +49,3 @@ func TestParseShortUrl(t *testing.T) {
 	t.Log(shortInfo)
 }
 
-func TestInitJsonData(t *testing.T) {
-	err := modles.InitJsonData()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log("success")
-}
