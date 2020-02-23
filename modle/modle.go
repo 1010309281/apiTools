@@ -48,6 +48,13 @@ func InitRedis() (err error) {
 	return
 }
 
+
+// 关闭IO流
+func CloseIO() {
+	// 关闭redis io
+	RedisPool.Close()
+}
+
 // 初始化json数据
 func InitJsonData() {
 	jsonFile, err := ioutil.ReadFile(filepath.Join(utils.GetRootPath(), "data/api", "apidocs.json"))

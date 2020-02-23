@@ -18,14 +18,18 @@ type appConfig struct {
 
 // 服务配置信息
 type serverConfig struct {
-	Port         string    `conf:"port"`         // http监听端口
-	AppMode      string    `conf:"appMode"`      // app运行模式: production, development
-	LogLevel     string    `conf:"logLevel"`     // 日志级别: debug, info, error, warn, panic
-	LogSaveDay   uint      `conf:"logSaveDay"`   // 日志文件保留天数
-	LogSplitTime uint      `conf:"logSplitTime"` // 日志切割时间间隔
-	LogOutType   string    `conf:"logOutType"`   // 日志输入类型, json, text
-	LogOutPath   string    `conf:"logOutPath"`   // 文件输出位置, file console
-	StartTime    time.Time `conf:"startTime"`    // 系统开始运行时间
+	Port                  string    `conf:"port"`                  // http监听端口
+	AppMode               string    `conf:"appMode"`               // app运行模式: production, development
+	LogLevel              string    `conf:"logLevel"`              // 日志级别: debug, info, error, warn, panic
+	LogSaveDay            uint      `conf:"logSaveDay"`            // 日志文件保留天数
+	LogSplitTime          uint      `conf:"logSplitTime"`          // 日志切割时间间隔
+	LogOutType            string    `conf:"logOutType"`            // 日志输入类型, json, text
+	LogOutPath            string    `conf:"logOutPath"`            // 文件输出位置, file console
+	StartTime             time.Time `conf:"startTime"`             // 系统开始运行时间
+	EnableIpLimiting      bool      `conf:"enableIpLimiting"`      // 是否开启ip限流
+	IpLimitingTimeSeconds uint      `conf:"ipLimitingTimeSeconds"` // IP限流时间段(单位: 秒)
+	IpLimitingCount       uint      `conf:"ipLimitingCount"`       // IP限流时间段内请求不能超过的次数
+	LiftIpLimiting        uint      `conf:"liftIpLimiting"`        // 解除ip限流的时间(单位: 秒)
 }
 
 // redis 配置信息
@@ -102,6 +106,18 @@ func GetInt(ck string) (int) {
 	return 0
 }
 
+func GetBool(ck string) (bool) {
+	value := Get(ck)
+	if value == nil {
+		return false
+	}
+	if v, ok := value.(bool); ok {
+		return v
+	}
+
+	return false
+}
+
 // 初始化配置
 func InitConfig() (err error) {
 	// 获取配置文件
@@ -173,14 +189,40 @@ func readServerConfig(iniFile *ini.File) (err error) {
 
 	startTime := serverConf.Key("startTime").String()
 	if startTime == "" {
-		appConf.StartTime = time.Now()
+		appConf.serverConfig.StartTime = time.Now()
 	} else {
 		runTime, err := time.Parse("2006/01/02", startTime)
 		if err != nil {
-			appConf.StartTime = time.Now()
+			appConf.serverConfig.StartTime = time.Now()
 		} else {
-			appConf.StartTime = runTime
+			appConf.serverConfig.StartTime = runTime
 		}
+	}
+
+	// ip限流
+	enableIpLimiting, err := serverConf.Key("enableIpLimiting").Bool()
+	if err != nil {
+		enableIpLimiting = false
+	}
+	appConf.serverConfig.EnableIpLimiting = enableIpLimiting
+	if enableIpLimiting {
+		ipLimitingTimeSeconds, err := serverConf.Key("ipLimitingTimeSeconds").Uint()
+		if err != nil || ipLimitingTimeSeconds == 0 {
+			ipLimitingTimeSeconds = 3
+		}
+		appConf.serverConfig.IpLimitingTimeSeconds = ipLimitingTimeSeconds
+
+		ipLimitingCount, err := serverConf.Key("ipLimitingCount").Uint()
+		if err != nil || ipLimitingCount == 0 {
+			ipLimitingCount = 5
+		}
+		appConf.serverConfig.IpLimitingCount = ipLimitingCount
+
+		liftIpLimiting, err := serverConf.Key("liftIpLimiting").Uint()
+		if err != nil || liftIpLimiting == 0 {
+			liftIpLimiting = 5
+		}
+		appConf.serverConfig.LiftIpLimiting = liftIpLimiting
 	}
 
 	return

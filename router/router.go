@@ -32,6 +32,10 @@ func InitRouter() {
 	Router.Use(middlreware.Logger())
 	Router.Use(middlreware.ProApiDocs())
 
+	if (config.GetBool("web::enableIpLimiting")) {
+		Router.Use(middlreware.IpLimiting())
+	}
+
 	// 404错误处理
 	Router.NoRoute(controlers.NoRouter)
 	Router.NoMethod(controlers.NoRouter)

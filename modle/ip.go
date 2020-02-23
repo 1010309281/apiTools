@@ -13,6 +13,7 @@ type Ipv4Form struct {
 
 // ipv4数据返回结构
 type Ipv4Info struct {
+	IP       string `json:"ip"`       // ip地址
 	CityId   int64  `json:"cityId"`   // 城市ID号
 	Country  string `json:"country"`  // 国家名称
 	Region   string `json:"region"`   // 区域号
@@ -42,6 +43,7 @@ func Ipv4Query(ipv4Form Ipv4Form) (Ipv4Info, error) {
 	if err != nil {
 		return ipInfo, err
 	}
+	ipInfo.IP = ipv4Form.Ip
 	ipInfo.CityId = queryIpInfo.CityId
 
 	if queryIpInfo.Country == "0" {

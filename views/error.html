@@ -18,10 +18,14 @@
 {{template "modle/header"}}
 <div id="container">
     <div id="error">
-        <i class="layui-icon layui-icon-face-cry" style="font-size: 30px; color: #2F4056;"></i>
-        {{.errorMsg}}
+        <h1>
+            <i class="layui-icon layui-icon-face-cry" style="font-size: 100px; color: #e91e63;"></i>
+        </h1>
+        <h2>
+            <span style="color: #686D8F;font: 70px bold;">{{.errorCode}}</span>
+            <span style="color: #DA694D;font: 50px bold;">{{.errorMsg}}</span>
+        </h2>
     </div>
 </div>
-{{template "modle/footer" .}}
 </body>
 </html>

@@ -17,7 +17,7 @@ func ApiIndex(c *gin.Context) {
 			"err":    err,
 			"info":   allApiInfo,
 		}).Error("access api index page fild")
-		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorMsg": "系统异常请稍后重试"})
+		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorCode": "503", "errorMsg": "系统异常请稍后重试"})
 		return
 	}
 	c.HTML(http.StatusOK, "index.html", allApiInfo)
@@ -47,12 +47,11 @@ func ApiDocs(c *gin.Context) {
 			"err":    err,
 			"info":   apiDocInfo,
 		}).Error("access api doc page fild")
-		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorMsg": "系统异常请稍后重试"})
+		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorCode": "503", "errorMsg": "系统异常请稍后重试"})
 		return
 	}
 	c.HTML(http.StatusOK, "docs.html", apiDocInfo)
 }
-
 
 // 关于ApiTools
 func ApiAbout(c *gin.Context) {

@@ -14,7 +14,7 @@ func ShortToShortUrl(c *gin.Context) {
 	shortForm := &modle.ShortForm{}
 	data := gin.H{
 		"code":     1,  // 转换成功状态码(0 成功, 非零 失败)
-		"domain":   "", // 短地址配置的域名
+		"domain":   gin.H{}, // 短地址配置的域名
 		"shortUrl": "", // 短链接地址
 	}
 	err := c.Bind(shortForm)

@@ -1,10 +1,12 @@
 package middlreware
 
 import (
+	"apiTools/libs/config"
 	"apiTools/libs/logger"
 	"apiTools/modle"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
@@ -127,5 +129,49 @@ func ProApiDocs() gin.HandlerFunc {
 			}
 		}
 		c.Next()
+	}
+}
+
+// api接口访问限流
+func IpLimiting() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		accessDenied := gin.H{
+			"code": 1,
+			"data": gin.H{},
+			"msg":  "access denied",
+		}
+		var ipLimitingTimeSeconds = config.GetInt("web::ipLimitingTimeSeconds") // IP限流时间段, 秒
+		var ipLimitingCount = config.GetInt("web::ipLimitingCount")             // IP限流时间段位内请求不能超过的次数
+		var liftIpLimiting = config.GetInt("web::liftIpLimiting")               // 解除ip限流的时间, 秒
+		clientIp := c.ClientIP()
+		redisClient := modle.RedisPool.Get()
+		defer redisClient.Close()
+		// 获取redis中存储的访问次数
+		count, _ := redis.Int(redisClient.Do("GET", clientIp))
+		if count >= ipLimitingCount {
+			if count == ipLimitingCount {
+				_, _ = redisClient.Do("SET", clientIp, "999", "EX", liftIpLimiting)
+			}
+			urlpath := c.Request.URL.Path
+			urlPathSlice := strings.Split(urlpath, "/")
+			if (len(urlPathSlice) >= 2) {
+				rk := urlPathSlice[1]
+				if rk == "api" {
+					c.JSON(http.StatusForbidden, accessDenied)
+					c.Abort()
+					return
+				}
+			}
+			c.HTML(http.StatusForbidden, "error.html", gin.H{"errorCode": "403", "errorMsg": "访问过于频繁，权限被拒绝"})
+			c.Abort()
+			return
+		} else {
+			if count == 0 {
+				_, _ = redisClient.Do("SET", clientIp, 1, "EX", ipLimitingTimeSeconds)
+			} else {
+				_, _ = redisClient.Do("INCR", clientIp)
+			}
+		}
+
 	}
 }

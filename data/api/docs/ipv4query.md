@@ -46,6 +46,7 @@ ip | String | 是 | IP地址
 --- | --- | ---
 code | Int | 转换成功状态码(0 成功, 非零 失败)
 msg | String | 消息
+ip | String | ip地址
 cityId | Int | 城市Id号
 region | String | 区域
 province | String | 省
@@ -62,6 +63,7 @@ isp | String | isp厂商
 {
     "code": 0,
     "data": {
+        "ip": "49.95.48.136",
         "cityId": 1015,
         "country": "中国",
         "region": "",

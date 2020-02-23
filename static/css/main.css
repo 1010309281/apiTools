@@ -225,7 +225,7 @@ body {
 /* error */
 #error {
     text-align: center;
-    margin-top: 1%;
+    margin-top: 10%;
     font: 22px bold;
     color: #393D49;
 }

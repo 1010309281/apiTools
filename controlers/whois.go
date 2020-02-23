@@ -13,7 +13,7 @@ func WhoisQuery(c *gin.Context) {
 	var whoisForm modle.WhoisForm
 	err := c.Bind(&whoisForm)
 	data := gin.H{
-		"data":   "", // whois数据
+		"data":   gin.H{}, // whois数据
 		"status": 5,  // 域名查询状态
 	}
 	if err != nil {
