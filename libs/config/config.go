@@ -208,13 +208,13 @@ func readServerConfig(iniFile *ini.File) (err error) {
 	if enableIpLimiting {
 		ipLimitingTimeSeconds, err := serverConf.Key("ipLimitingTimeSeconds").Uint()
 		if err != nil || ipLimitingTimeSeconds == 0 {
-			ipLimitingTimeSeconds = 3
+			ipLimitingTimeSeconds = 10
 		}
 		appConf.serverConfig.IpLimitingTimeSeconds = ipLimitingTimeSeconds
 
 		ipLimitingCount, err := serverConf.Key("ipLimitingCount").Uint()
 		if err != nil || ipLimitingCount == 0 {
-			ipLimitingCount = 5
+			ipLimitingCount = 8
 		}
 		appConf.serverConfig.IpLimitingCount = ipLimitingCount
 
