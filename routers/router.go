@@ -1,9 +1,9 @@
-package router
+package routers
 
 import (
 	"apiTools/controlers"
 	"apiTools/libs/config"
-	"apiTools/router/middlreware"
+	"apiTools/routers/middlreware"
 	"apiTools/utils"
 	"github.com/gin-gonic/gin"
 	"path/filepath"
@@ -32,7 +32,7 @@ func InitRouter() {
 	Router.Use(middlreware.Logger())
 	Router.Use(middlreware.ProApiDocs())
 
-	if (config.GetBool("web::enableIpLimiting")) {
+	if config.GetBool("web::enableIpLimiting") {
 		Router.Use(middlreware.IpLimiting())
 	}
 

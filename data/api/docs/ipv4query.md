@@ -49,6 +49,7 @@ msg | String | 消息
 ip | String | ip地址
 cityId | Int | 城市Id号
 region | String | 区域
+country | String | 国家
 province | String | 省
 city | String | 市
 isp | String | isp厂商

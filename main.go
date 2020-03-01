@@ -2,13 +2,13 @@ package main
 
 import (
 	"apiTools/cmd"
-	"apiTools/modle"
+	"apiTools/modles"
 )
 
 func main() {
 	err := cmd.InitServer()
 
-	defer modle.CloseIO()
+	defer modles.CloseIO()
 
 	if err != nil {
 		panic(err)

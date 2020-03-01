@@ -1,7 +1,7 @@
 package controlers
 
 import (
-	"apiTools/modle"
+	"apiTools/modles"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -17,7 +17,7 @@ func NoRouter(c *gin.Context) {
 	}
 	host, path := c.Request.Host, c.Request.URL.Path
 	shortUrl := fmt.Sprintf("http://%s%s", host, path)
-	shortInfo, err := modle.ParseShort(shortUrl)
+	shortInfo, err := modles.ParseShort(shortUrl)
 	if err != nil {
 		c.String(http.StatusNotFound, "404 page not found")
 		//c.Redirect(http.StatusFound, "/")

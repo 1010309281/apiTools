@@ -1,4 +1,4 @@
-package modle
+package modles
 
 import (
 	"apiTools/utils"
@@ -42,21 +42,20 @@ type WhoisInfo struct {
 	JsonInfo map[string]interface{} // 域名whois查询后转换为map的信息
 }
 
-func init() {
-	getWhoisServers()
-}
-
 // 获取whois服务器列表
-func getWhoisServers() {
+func InitWhoisServers() (err error) {
 	whoisServers = make(map[string][]string)
 	fileBytes, err := ioutil.ReadFile(filepath.Join(utils.GetRootPath(), "data/whois", "whois.servers.json"))
 	if err != nil {
-		panic(fmt.Sprintf("read whois servers json file fild, err: %v\n", err))
+		err = fmt.Errorf("read whois servers json file fail, err: %v\n", err)
+		return
 	}
 	err = json.Unmarshal(fileBytes, &whoisServers)
 	if err != nil {
-		panic(fmt.Sprintf("unmarshal whois server json file fild, err: %v\n", err))
+		err = fmt.Errorf("unmarshal whois server json file fail, err: %v\n", err)
+		return
 	}
+	return
 }
 
 // 返回域名whois信息,文本数据信息

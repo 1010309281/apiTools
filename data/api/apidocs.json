@@ -26,5 +26,12 @@
     "description": "获取指定ipv4地址信息",
     "titleName": "ipv4信息查询",
     "enable": true
+  },
+  "proxypool": {
+    "docFile": "proxypool.md",
+    "countKey": "proxypool",
+    "description": "全球免费代理IP库，高可用IP，精心筛选优质IP",
+    "titleName": "全球免费代理IP库",
+    "enable": true
   }
 }

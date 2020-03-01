@@ -4,6 +4,7 @@
 /logs/*
 
 # tmp file
+Test*
 
 # dev file
 run_apiTools

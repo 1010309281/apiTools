@@ -2,8 +2,12 @@ package config
 
 import (
 	"apiTools/utils"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/go-ego/gse"
 	"gopkg.in/ini.v1"
+	"io/ioutil"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -14,6 +18,8 @@ import (
 type appConfig struct {
 	serverConfig `conf:"web"`
 	redisConfig  `conf:"redis"`
+	mysqlConfig  `conf:"mysql"`
+	proxyPoolApp `conf:"proxyPoolApp"`
 }
 
 // 服务配置信息
@@ -39,85 +45,34 @@ type redisConfig struct {
 	Password string `conf:"password"` // redis连接密码
 }
 
+// mysql 配置信息
+type mysqlConfig struct {
+	Host        string `conf:"host"`        // mysql连接地址
+	Port        string `conf:"port"`        // mysql连接端口
+	User        string `conf:"user"`        // mysql用户名
+	Password    string `conf:"password"`    // mysql连接密码
+	DB          string `conf:"db"`          // mysql 数据库名称
+	EnableDebug bool   `conf:"enableDebug"` // 是否开启sql调试模式
+}
+
+// 代理池在redis中存储结构
+type RedisProxyPool struct {
+	KeyName  string `json:"keyName"`  // redis 键名称
+	CheckUrl string `json:"checkUrl"` // proxy 检测url名称
+}
+
+// proxy pool app配置信息
+type proxyPoolApp struct {
+	IsStartRunSpider bool `conf:"isStartRunSpider"`
+	RedisProxyPools  []*RedisProxyPool
+}
+
 var (
 	appConf appConfig
+	Seg     gse.Segmenter // 分词
 )
 
-// 获取指定字段值
-// Get("web::port")
-// Get("appname")
-func Get(ck string) interface{} {
-	if ck == "" {
-		return nil
-	}
-	keys := strings.Split(ck, "::")
-	if len(keys) == 0 {
-		return nil
-	}
-	appType := reflect.TypeOf(appConf)
-	appVal := reflect.ValueOf(appConf)
-	for i := 0; i < appType.NumField(); i++ {
-		appTypeFiled := appType.Field(i)
-		regionTag := appTypeFiled.Tag.Get("conf")
-		if regionTag == keys[0] {
-			if len(keys) > 1 {
-				regionType := appVal.Field(i).Type()
-				regionVal := appVal.Field(i)
-				for j := 0; j < regionType.NumField(); j++ {
-					regionTypeFiled := regionType.Field(j)
-					confTag := regionTypeFiled.Tag.Get("conf")
-					if confTag == keys[1] {
-						val := regionVal.FieldByName(regionTypeFiled.Name).Interface()
-						return val
-					}
-				}
-			} else {
-				val := appVal.FieldByName(appTypeFiled.Name).Interface()
-				return val
-			}
-		}
-	}
-	return nil
-}
-
-func GetString(ck string) (val string) {
-	value := Get(ck)
-	if value == nil {
-		return
-	}
-	val, ok := value.(string)
-	if !ok {
-		return ""
-	}
-	return
-}
-
-func GetInt(ck string) (int) {
-	value := Get(ck)
-	if value == nil {
-		return 0
-	}
-	if v01, ok01 := value.(uint); ok01 {
-		return int(v01)
-	}
-	if v02, ok02 := value.(int); ok02 {
-		return v02
-	}
-	return 0
-}
-
-func GetBool(ck string) (bool) {
-	value := Get(ck)
-	if value == nil {
-		return false
-	}
-	if v, ok := value.(bool); ok {
-		return v
-	}
-
-	return false
-}
-
+// ----------- 初始化配置 ----------- //
 // 初始化配置
 func InitConfig() (err error) {
 	// 获取配置文件
@@ -136,6 +91,20 @@ func InitConfig() (err error) {
 	if err != nil {
 		return
 	}
+
+	// 读取mysql配置
+	err = readMysqlConfig(iniFile)
+	if err != nil {
+		return
+	}
+
+	// 读取proxy app 配置
+	err = readProxyAppConfig(iniFile)
+	if err != nil {
+		return
+	}
+	// 初始化分词功能, 加载默认字典
+	Seg.LoadDict()
 	return
 }
 
@@ -248,4 +217,161 @@ func readRedisConfig(iniFile *ini.File) (err error) {
 	appConf.redisConfig.Password = password
 
 	return
+}
+
+// 读取mysql配置
+func readMysqlConfig(iniFile *ini.File) (err error) {
+	mysqlConf := iniFile.Section("mysql")
+
+	host := mysqlConf.Key("host").String()
+	if host == "" {
+		return errors.New("config file mysql host can not be empty")
+	}
+	appConf.mysqlConfig.Host = host
+
+	port := mysqlConf.Key("port").String()
+	if port == "" {
+		port = "3306"
+	}
+	appConf.mysqlConfig.Port = port
+
+	user := mysqlConf.Key("user").String()
+	if user == "" {
+		return errors.New("config file mysql connection user can not be empty")
+	}
+	appConf.mysqlConfig.User = user
+
+	password := mysqlConf.Key("password").String()
+	if password == "" {
+		return errors.New("config file mysql connection password can not be empty")
+	}
+	appConf.mysqlConfig.Password = password
+
+	db := mysqlConf.Key("db").String()
+	if db == "" {
+		return errors.New("config file mysql db name can not be empty")
+	}
+	appConf.mysqlConfig.DB = db
+
+	enableDebug, err := mysqlConf.Key("enableDebug").Bool()
+	if err != nil {
+		enableDebug = false
+	}
+	appConf.mysqlConfig.EnableDebug = enableDebug
+
+	return
+}
+
+// 读取proxy app配置
+func readProxyAppConfig(iniFile *ini.File) (err error) {
+	proxyPoolAppConf := iniFile.Section("proxyPoolApp")
+	err = initRedisProxyPools()
+	if err != nil {
+		return
+	}
+
+	isStartRunSpider, err := proxyPoolAppConf.Key("isStartRunSpider").Bool()
+	if err != nil {
+		isStartRunSpider = true
+	}
+	appConf.proxyPoolApp.IsStartRunSpider = isStartRunSpider
+
+	return
+}
+
+// 初始化redis proxy ip 池配置
+func initRedisProxyPools() (err error) {
+	redisProxyPoolsFile, err := ioutil.ReadFile(filepath.Join(utils.GetRootPath(), "config", "redisProxyPools.json"))
+	if err != nil {
+		return
+	}
+	redisProxyPools := make([]*RedisProxyPool, 0, 10)
+	err = json.Unmarshal(redisProxyPoolsFile, &redisProxyPools)
+	if err != nil {
+		err = fmt.Errorf("config parse redisProxyPools.json fail, err: %v", err)
+		return
+	}
+	appConf.proxyPoolApp.RedisProxyPools = redisProxyPools
+	return
+}
+
+// ----------- 获取数据 ----------- //
+
+// 获取指定字段值
+// Get("web::port")
+// Get("appname")
+func Get(ck string) interface{} {
+	if ck == "" {
+		return nil
+	}
+	keys := strings.Split(ck, "::")
+	if len(keys) == 0 {
+		return nil
+	}
+	appType := reflect.TypeOf(appConf)
+	appVal := reflect.ValueOf(appConf)
+	for i := 0; i < appType.NumField(); i++ {
+		appTypeFiled := appType.Field(i)
+		regionTag := appTypeFiled.Tag.Get("conf")
+		if regionTag == keys[0] {
+			if len(keys) > 1 {
+				regionType := appVal.Field(i).Type()
+				regionVal := appVal.Field(i)
+				for j := 0; j < regionType.NumField(); j++ {
+					regionTypeFiled := regionType.Field(j)
+					confTag := regionTypeFiled.Tag.Get("conf")
+					if confTag == keys[1] {
+						val := regionVal.FieldByName(regionTypeFiled.Name).Interface()
+						return val
+					}
+				}
+			} else {
+				val := appVal.FieldByName(appTypeFiled.Name).Interface()
+				return val
+			}
+		}
+	}
+	return nil
+}
+
+func GetString(ck string) (val string) {
+	value := Get(ck)
+	if value == nil {
+		return
+	}
+	val, ok := value.(string)
+	if !ok {
+		return ""
+	}
+	return
+}
+
+func GetInt(ck string) (int) {
+	value := Get(ck)
+	if value == nil {
+		return 0
+	}
+	if v01, ok01 := value.(uint); ok01 {
+		return int(v01)
+	}
+	if v02, ok02 := value.(int); ok02 {
+		return v02
+	}
+	return 0
+}
+
+func GetBool(ck string) (bool) {
+	value := Get(ck)
+	if value == nil {
+		return false
+	}
+	if v, ok := value.(bool); ok {
+		return v
+	}
+
+	return false
+}
+
+func GetRedisProxyPools() []*RedisProxyPool {
+	return appConf.proxyPoolApp.RedisProxyPools
 }

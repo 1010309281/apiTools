@@ -1,4 +1,4 @@
-package modle
+package modles
 
 import (
 	"apiTools/libs/config"
@@ -55,7 +55,7 @@ func GetAllApiInfo() (allApiInfo *AllApiInfo, err error) {
 	// 循环json数据获取api list
 	jsonData, ok := JsonData.(map[string]interface{})
 	if !ok {
-		return allApiInfo, errors.New("json data to map fild")
+		return allApiInfo, errors.New("json data to map fail")
 	}
 	redisClient := RedisPool.Get()
 	defer redisClient.Close()

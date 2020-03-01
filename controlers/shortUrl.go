@@ -2,7 +2,7 @@ package controlers
 
 import (
 	"apiTools/libs/logger"
-	"apiTools/modle"
+	"apiTools/modles"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -11,7 +11,7 @@ import (
 
 // 长链接转换为短链接 --> api
 func ShortToShortUrl(c *gin.Context) {
-	shortForm := &modle.ShortForm{}
+	shortForm := &modles.ShortForm{}
 	data := gin.H{
 		"code":     1,  // 转换成功状态码(0 成功, 非零 失败)
 		"domain":   gin.H{}, // 短地址配置的域名
@@ -22,7 +22,7 @@ func ShortToShortUrl(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "Incorrect request data"})
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    err,
 			"query":  shortForm,
 		}).Error("get query to short url form param fail")
@@ -37,11 +37,11 @@ func ShortToShortUrl(c *gin.Context) {
 		shortForm.ExpireTime = -1
 	}
 
-	shortInfo, err := modle.ToShortUrl(shortForm)
+	shortInfo, err := modles.ToShortUrl(shortForm)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "Short link generation failed, please try again later!!!"})
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    err,
 			"query":  shortForm,
 			"data":   shortInfo,
@@ -55,7 +55,7 @@ func ShortToShortUrl(c *gin.Context) {
 
 	// log info
 	logger.Echo.WithFields(logrus.Fields{
-		"router": c.Request.URL.Path,
+		"routers": c.Request.URL.Path,
 		"warn":   err,
 		"query":  shortForm,
 		"data":   shortInfo,
@@ -76,19 +76,19 @@ func ShortParseShortUrl(c *gin.Context) {
 	if shortUrlQuery == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "shortUrl parameter cannot be empty",})
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    data["msg"],
 			"query":  "",
 		}).Error("get query param short url form param fail")
 		return
 	}
 	// 解析短链接
-	shortInfo, err := modle.ParseShort(shortUrlQuery)
+	shortInfo, err := modles.ParseShort(shortUrlQuery)
 	// 解析失败
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "data": data, "msg": "parse short url fail"})
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    err,
 			"query":  shortUrlQuery,
 			"data":   shortInfo,
@@ -102,7 +102,7 @@ func ShortParseShortUrl(c *gin.Context) {
 
 	// log info
 	logger.Echo.WithFields(logrus.Fields{
-		"router": c.Request.URL.Path,
+		"routers": c.Request.URL.Path,
 		"warn":   err,
 		"query":  shortUrlQuery,
 		"data":   shortInfo,

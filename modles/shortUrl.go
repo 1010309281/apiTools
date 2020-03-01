@@ -1,4 +1,4 @@
-package modle
+package modles
 
 import (
 	"apiTools/utils"
@@ -44,7 +44,7 @@ func checkShortUrl(shortForm *ShortForm) (*ShortInfo, bool, error) {
 		fmt.Sprintf("short_long_%s", shortInfo.LongUrlMd5),
 		"longUrl", "domain", "shortStr"))
 	if err != nil || len(LongInfoBytes) != 3 {
-		return shortInfo, false, fmt.Errorf("get long info fild, err: %v", err)
+		return shortInfo, false, fmt.Errorf("get long info fail, err: %v", err)
 	}
 	// 赋值
 	shortInfo.LongUrl = string(LongInfoBytes[0])
@@ -156,7 +156,7 @@ func ParseShort(shortUrl string) (*ShortInfo, error) {
 	LongInfoBytes, err := redis.ByteSlices(redisClient.Do("HMGET", fmt.Sprintf("short_long_%s", shortInfo.LongUrlMd5),
 		"longUrl", "domain", "shortStr"))
 	if err != nil || len(LongInfoBytes) != 3 {
-		return shortInfo, fmt.Errorf("get long info fild, err: %v", err)
+		return shortInfo, fmt.Errorf("get long info fail, err: %v", err)
 	}
 	// 赋值
 	shortInfo.LongUrl = string(LongInfoBytes[0])

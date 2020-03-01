@@ -1,4 +1,4 @@
-package modle
+package modles
 
 import (
 	"apiTools/utils"
@@ -26,14 +26,14 @@ var (
 	ipv4db *ip2region.Ip2Region
 )
 
-func init() {
-	// 初始化ipv4db数据库信息
+// 初始化ipv4db数据库信息
+func InitIp4DB() (err error) {
 	region, err := ip2region.New(filepath.Join(utils.GetRootPath(), "data/ip/ip2region.db"))
 	if err != nil {
-		panic(err)
+		return
 	}
 	ipv4db = region
-
+	return
 }
 
 // ipv4信息查询

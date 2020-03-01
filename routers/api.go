@@ -1,4 +1,4 @@
-package router
+package routers
 
 import (
 	"apiTools/controlers"
@@ -7,12 +7,12 @@ import (
 // 初始化api路由
 func initApiRouter() {
 	apiGroup := Router.Group("/api")
-	// whois router
+	// whois routers
 	{
 		apiGroup.GET("/whoisquery", controlers.WhoisQuery)
 		apiGroup.POST("/whoisquery", controlers.WhoisQuery)
 	}
-	// short router
+	// short routers
 	{
 		// 长链接转换为短链接
 		apiGroup.GET("/toshorturl", controlers.ShortToShortUrl)
@@ -25,5 +25,10 @@ func initApiRouter() {
 	{
 		apiGroup.GET("/ipv4query", controlers.Ipv4Query)
 		apiGroup.POST("/ipv4query", controlers.Ipv4Query)
+	}
+	// proxy pool query
+	{
+		apiGroup.GET("/proxypool", controlers.ProxyPoolQuery)
+		apiGroup.POST("/proxypool", controlers.ProxyPoolQuery)
 	}
 }

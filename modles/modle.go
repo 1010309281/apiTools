@@ -1,4 +1,4 @@
-package modle
+package modles
 
 import (
 	"apiTools/libs/config"
@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"io/ioutil"
 	"path/filepath"
 	"time"
@@ -14,11 +16,8 @@ import (
 var (
 	RedisPool *redis.Pool
 	JsonData  interface{}
+	SqlConn   *gorm.DB
 )
-
-func init() {
-	InitJsonData()
-}
 
 func InitRedis() (err error) {
 	RedisPool = &redis.Pool{
@@ -48,22 +47,58 @@ func InitRedis() (err error) {
 	return
 }
 
+func InitMysql() (err error) {
+	// CREATE DATABASE `apitools` CHARACTER SET utf8 COLLATE utf8_general_ci;
+	// ALTER user 'apitools'@'localhost' IDENTIFIED BY 'apitools#.*'
+
+
+	db, err := gorm.Open("mysql",
+		fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			config.GetString("mysql::user"),
+			config.GetString("mysql::password"),
+			config.GetString("mysql::host"),
+			config.GetString("mysql::port"),
+			config.GetString("mysql::db"),
+		))
+	if err != nil {
+		return
+	}
+	SqlConn = db
+
+	if config.GetBool("mysql::enableDebug") {
+		db.LogMode(true)
+	}
+	// 单数表名
+	SqlConn.SingularTable(true)
+
+	// 自动映表
+	SqlConn.AutoMigrate(&ProxyPool{})
+
+	return
+}
 
 // 关闭IO流
 func CloseIO() {
+	defer func() {
+		recover()
+	}()
+
 	// 关闭redis io
 	RedisPool.Close()
+
+	// 关闭mysql io
+	SqlConn.Close()
 }
 
-// 初始化json数据
-func InitJsonData() {
+// 初始化api docs json数据
+func InitApiDocsJsonData() (err error) {
 	jsonFile, err := ioutil.ReadFile(filepath.Join(utils.GetRootPath(), "data/api", "apidocs.json"))
 	if err != nil {
-		panic(err)
+		return
 	}
 	err = json.Unmarshal(jsonFile, &JsonData)
 	if err != nil {
-		panic(err)
+		return
 	}
 	return
 }

@@ -2,7 +2,7 @@ package controlers
 
 import (
 	"apiTools/libs/logger"
-	"apiTools/modle"
+	"apiTools/modles"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -10,13 +10,13 @@ import (
 
 // Api文档首页
 func ApiIndex(c *gin.Context) {
-	allApiInfo, err := modle.GetAllApiInfo()
+	allApiInfo, err := modles.GetAllApiInfo()
 	if err != nil {
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    err,
 			"info":   allApiInfo,
-		}).Error("access api index page fild")
+		}).Error("access api index page fail")
 		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorCode": "503", "errorMsg": "系统异常请稍后重试"})
 		return
 	}
@@ -40,13 +40,13 @@ func ApiDocs(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
-	apiDocInfo, err := modle.GetApiDocInfo(apiDocFileName, urlPath, countKey)
+	apiDocInfo, err := modles.GetApiDocInfo(apiDocFileName, urlPath, countKey)
 	if err != nil {
 		logger.Echo.WithFields(logrus.Fields{
-			"router": c.Request.URL.Path,
+			"routers": c.Request.URL.Path,
 			"err":    err,
 			"info":   apiDocInfo,
-		}).Error("access api doc page fild")
+		}).Error("access api doc page fail")
 		c.HTML(http.StatusBadGateway, "error.html", gin.H{"errorCode": "503", "errorMsg": "系统异常请稍后重试"})
 		return
 	}

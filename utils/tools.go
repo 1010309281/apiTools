@@ -2,8 +2,8 @@ package utils
 
 import (
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
+	"github.com/robfig/cron/v3"
 	"io"
 	"math/rand"
 	"os"
@@ -73,11 +73,26 @@ func merge(a, b []rune) []rune {
 	return c
 }
 
-func StructToMap(i interface{}) interface{} {
-	var mapData interface{}
-	// 转json
-	bytes, _ := json.Marshal(i)
-	// json转map
-	_ = json.Unmarshal(bytes, &mapData)
-	return mapData
+// 重新定义cron定时任务初始化
+func NewWithCron() *cron.Cron {
+	secondParser := cron.NewParser(cron.Second | cron.Minute |
+		cron.Hour | cron.Dom | cron.Month | cron.DowOptional | cron.Descriptor)
+	return cron.New(cron.WithParser(secondParser), cron.WithChain())
+}
+
+// 定时器，用于堵塞进程
+// second 定时时间 秒
+func TimerUtil(second int64) {
+	timer := time.NewTimer(time.Second * time.Duration(second))
+	<-timer.C
+}
+
+// 判断值是否在一个切片中存在
+func IsInSelic(data string, slice []string) bool {
+	for _, s := range slice {
+		if s == data {
+			return true
+		}
+	}
+	return false
 }

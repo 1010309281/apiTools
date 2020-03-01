@@ -60,27 +60,19 @@ msg | String | 消息
     "code": 0,
     "data": {
         "data": {
-            "creationDate": "2017-07-27T04:02:14Z",
-            "domainName": "DUOLET.COM",
-            "domainStatus": [
-                "clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited",
-                "clientRenewProhibited https://icann.org/epp#clientRenewProhibited",
-                "clientTransferProhibited https://icann.org/epp#clientTransferProhibited",
-                "clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited"
-            ],
+            "domainName": "devopsclub.cn",
+            "domainStatus": "ok",
+            "expirationTime": "2024-05-18 22:00:04",
             "nameServer": [
-                "NS1.UKM34.SITEGROUND.BIZ",
-                "NS2.UKM34.SITEGROUND.BIZ"
+                "dns15.hichina.com",
+                "dns16.hichina.com"
             ],
-            "registrar": "Wild West Domains, LLC",
-            "registrarAbuseContactEmail": "abuse@wildwestdomains.com",
-            "registrarAbuseContactPhone": "480-624-2505",
-            "registrarIANAID": "440",
-            "registrarURL": "http://www.wildwestdomains.com",
-            "registrarWHOISServer": "whois.wildwestdomains.com",
-            "registryDomainID": "2147302095_DOMAIN_COM-VRSN",
-            "registryExpiryDate": "2020-07-27T04:02:14Z",
-            "updatedDate": "2019-09-01T11:28:18Z"
+            "registrant": "马智超",
+            "registrantContactEmail": "aery_mzc9123@163.com",
+            "registrantID": "al49ebxdhyhntmy",
+            "registrationTime": "2019-05-18 22:00:04",
+            "roid": "20190518s10001s12090676-cn",
+            "sponsoringRegistrar": "阿里云计算有限公司（万网）"
         },
         "status": 0
     },

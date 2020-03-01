@@ -3,7 +3,7 @@ package middlreware
 import (
 	"apiTools/libs/config"
 	"apiTools/libs/logger"
-	"apiTools/modle"
+	"apiTools/modles"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gomodule/redigo/redis"
@@ -87,7 +87,7 @@ func ProApiDocs() gin.HandlerFunc {
 		rk := urlPathSlice[1]
 		urlPath := urlPathSlice[2]
 		// 获取json data
-		jsonData, ok := modle.JsonData.(map[string]interface{})
+		jsonData, ok := modles.JsonData.(map[string]interface{})
 		if !ok {
 			c.Next()
 			return
@@ -114,7 +114,7 @@ func ProApiDocs() gin.HandlerFunc {
 				c.Set("docFile", docFile)
 				// redis自增
 				countKeyName := fmt.Sprintf("apiCount_%s", countKey)
-				redisClient := modle.RedisPool.Get()
+				redisClient := modles.RedisPool.Get()
 				defer redisClient.Close()
 				_, _ = redisClient.Do("INCR", countKeyName)
 			}
@@ -144,7 +144,7 @@ func IpLimiting() gin.HandlerFunc {
 		var ipLimitingCount = config.GetInt("web::ipLimitingCount")             // IP限流时间段位内请求不能超过的次数
 		var liftIpLimiting = config.GetInt("web::liftIpLimiting")               // 解除ip限流的时间, 秒
 		clientIp := c.ClientIP()
-		redisClient := modle.RedisPool.Get()
+		redisClient := modles.RedisPool.Get()
 		defer redisClient.Close()
 		// 获取redis中存储的访问次数
 		count, _ := redis.Int(redisClient.Do("GET", clientIp))
