@@ -10,6 +10,7 @@ ApiTools是一个集成各种开放Api的web项目，为大家提供免费的、
 开发语言: go 1.13
 web框架: gin 
 nosql数据库: redis 5.x
+关系型数据库: mysql 5.7+
 ```
 
 ### 部署
